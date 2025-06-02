@@ -1,27 +1,24 @@
 package com.lee.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lee.entity.Article;
 import com.lee.entity.Comment;
+import com.lee.entity.Follow;
 import com.lee.entity.User;
 import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.entity.dto.ArticleDTO;
 import com.lee.entity.dto.CommentDto;
 import com.lee.service.IArticleService;
 import com.lee.service.ICommentService;
+import com.lee.service.IFollowService;
 import com.lee.service.IUserService;
-import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
 
-import java.net.URLDecoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +38,9 @@ public class ArticleController {
     private IUserService userService;
     @Autowired
     private ICommentService commentService;
+    @Autowired
+    private IFollowService followService;
+
     @RequestMapping("/loadDataList")
     public List<Article> loadDataList(){
         return articleService.list();
@@ -133,5 +133,17 @@ public class ArticleController {
         return articleService.list(queryWrapper);
     }
 
-
+    @RequestMapping("/addConcern")
+    public void addConcer(
+            Integer userId,
+            Integer fanId
+    ){
+        Follow follow = new Follow();
+        follow.setUserId(userId);
+        follow.setFanId(fanId);
+        follow.setCreateTime(LocalDateTime.now());
+        follow.setUpdateTime(LocalDateTime.now());
+        followService.save(follow);
+        return;
+    }
 }
