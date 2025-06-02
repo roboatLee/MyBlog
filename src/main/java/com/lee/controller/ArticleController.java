@@ -69,6 +69,7 @@ public class ArticleController {
             User commentUser = userService.getById(comment.getUserId());
             precomment.setNikename(commentUser.getNikename());
             precomment.setAvatarPosition(commentUser.getAvatarPosition());
+            precomment.setUserId(comment.getUserId());
             commentDtos.add(precomment);
         }
         articleDTO.setComments(commentDtos);

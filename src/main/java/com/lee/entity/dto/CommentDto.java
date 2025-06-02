@@ -1,5 +1,7 @@
 package com.lee.entity.dto;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
@@ -21,4 +23,8 @@ public class CommentDto {
      * 头像位置
      */
     private  String avatarPosition;
+    /**
+     * id
+     */
+    private Integer userId;
 }
