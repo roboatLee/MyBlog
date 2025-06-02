@@ -10,6 +10,7 @@ import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.entity.dto.ArticleDTO;
 import com.lee.service.IArticleService;
 import com.lee.service.IUserService;
+import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
@@ -40,11 +41,19 @@ public class ArticleController {
     }
 
     @RequestMapping("/getArticleById/{id}")
-    public Article getArticleById(
+    public ArticleDTO getArticleById(
             @PathVariable(value = "id") Integer id
     ){
         System.out.println(id);
-        return articleService.getById(id);
+        ArticleDTO articleDTO = new ArticleDTO();
+        Article article =  articleService.getById(id);
+        User user = userService.getById(article.getUserId());
+        articleDTO.setHtmlContent(article.getHtmlContent());
+        articleDTO.setTitle(article.getTitle());
+        articleDTO.setMarkdownContent(article.getMarkdownContent());
+        articleDTO.setUserName(user.getNikename());
+        articleDTO.setCreateTime(article.getCreateTime());
+        return articleDTO;
     }
 
     @RequestMapping("/getArticleByUserId/{id}")
