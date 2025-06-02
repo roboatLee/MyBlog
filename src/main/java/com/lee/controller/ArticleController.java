@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lee.entity.Article;
+import com.lee.entity.Comment;
 import com.lee.entity.User;
 import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.entity.dto.ArticleDTO;
 import com.lee.service.IArticleService;
+import com.lee.service.ICommentService;
 import com.lee.service.IUserService;
 import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class ArticleController {
     private IArticleService articleService;
     @Autowired
     private IUserService userService;
+    @Autowired
+    private ICommentService commentService;
     @RequestMapping("/loadDataList")
     public List<Article> loadDataList(){
         return articleService.list();
@@ -53,6 +57,9 @@ public class ArticleController {
         articleDTO.setMarkdownContent(article.getMarkdownContent());
         articleDTO.setUserName(user.getNikename());
         articleDTO.setCreateTime(article.getCreateTime());
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("article_id", id);
+        articleDTO.setComments(commentService.list(queryWrapper));
         return articleDTO;
     }
 
@@ -60,7 +67,6 @@ public class ArticleController {
     public List<Article> getArticleByUserId(
             @PathVariable(value = "id") Integer id
     ){
-        System.out.println(id);
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", id);
         return articleService.list(queryWrapper);
@@ -112,5 +118,15 @@ public class ArticleController {
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.like("title",keyword);
         return articleService.list(queryWrapper);
+    }
+
+    @RequestMapping("/editPersonal")
+    public void editPersonal(
+        String nikename,
+        String personalSignature,
+        String avaterPosition
+
+    ){
+
     }
 }

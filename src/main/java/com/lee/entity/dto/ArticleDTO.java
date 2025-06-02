@@ -1,8 +1,10 @@
 package com.lee.entity.dto;
 
+import com.lee.entity.Comment;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author KitenLee
@@ -15,4 +17,5 @@ public class ArticleDTO {
     private String markdownContent;
     private String userName;
     private LocalDateTime createTime;
+    private List<Comment> comments;
 }
