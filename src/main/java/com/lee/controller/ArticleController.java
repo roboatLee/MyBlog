@@ -9,6 +9,7 @@ import com.lee.entity.Comment;
 import com.lee.entity.User;
 import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.entity.dto.ArticleDTO;
+import com.lee.entity.dto.CommentDto;
 import com.lee.service.IArticleService;
 import com.lee.service.ICommentService;
 import com.lee.service.IUserService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import java.net.URLDecoder;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +61,17 @@ public class ArticleController {
         articleDTO.setCreateTime(article.getCreateTime());
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("article_id", id);
-        articleDTO.setComments(commentService.list(queryWrapper));
+        List<Comment> comments = commentService.list(queryWrapper);
+        List<CommentDto> commentDtos = new ArrayList<>();
+        for (Comment comment : comments){
+            CommentDto precomment = new CommentDto();
+            precomment.setContent(comment.getContent());
+            User commentUser = userService.getById(comment.getUserId());
+            precomment.setNikename(commentUser.getNikename());
+            precomment.setAvatarPosition(commentUser.getAvatarPosition());
+            commentDtos.add(precomment);
+        }
+        articleDTO.setComments(commentDtos);
         return articleDTO;
     }
 
@@ -120,13 +132,5 @@ public class ArticleController {
         return articleService.list(queryWrapper);
     }
 
-    @RequestMapping("/editPersonal")
-    public void editPersonal(
-        String nikename,
-        String personalSignature,
-        String avaterPosition
 
-    ){
-
-    }
 }

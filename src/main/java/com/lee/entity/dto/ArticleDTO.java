@@ -17,5 +17,5 @@ public class ArticleDTO {
     private String markdownContent;
     private String userName;
     private LocalDateTime createTime;
-    private List<Comment> comments;
+    private List<CommentDto> comments;
 }

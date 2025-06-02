@@ -58,7 +58,7 @@ public class User implements Serializable {
     /**
      * 头像位置
      */
-    private  Integer avatarPosition;
+    private  String avatarPosition;
 
 
 }

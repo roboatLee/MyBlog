@@ -4,11 +4,15 @@ package com.lee.controller;
 import com.lee.entity.User;
 import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.service.IUserService;
+import com.lee.utils.MinioUtils;
 import com.lee.utils.RedisUtils;
 import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +31,9 @@ public class AccountController {
 
     @Autowired
     private RedisUtils redisUtils;
+
+    @Autowired
+    private MinioUtils minioUtils;
 
     @RequestMapping("/register")
     public boolean register(
@@ -92,4 +99,41 @@ public class AccountController {
         return tokenUserInfoDto;
     }
 
+    @RequestMapping("/editPersonal")
+    public void editPersonal(
+            Integer Id,
+            String nikename,
+            String personalSignature,
+            String avaterPosition
+
+    ){
+        User user = new User();
+        user.setId(Id);
+        user.setNikename(nikename);
+        user.setPersonalSignature(personalSignature);
+        user.setAvatarPosition(avaterPosition);
+        userService.updateById(user);
+        return;
+    }
+
+    @RequestMapping("/uploadavater")
+    public String uploadAvaterFile(
+            @RequestParam("file")MultipartFile file
+    ){
+        String fileName = new String();
+        try{
+            fileName =  minioUtils.uploadFile(file);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        return  fileName;
+    }
+
+    @RequestMapping("/getPersonal/{id}")
+    public User getPersonal(
+        @PathVariable Integer id
+    ){
+        User user = userService.getById(id);
+        return  user;
+    }
 }

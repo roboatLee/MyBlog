@@ -3,6 +3,7 @@ server:
   servlet:
     context-path: /api
 
+
 #数据库配置信息
 spring:
   datasource:
@@ -14,5 +15,13 @@ spring:
   redis:
     host: localhost
     port: 6379
-
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
 #minio配置
+minio:
+  endpoint: http://localhost:9000/
+  accessKey: admin
+  secretKey: password
+  bucketName: myblog
