@@ -29,7 +29,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean register(String email, String nickname, String password) {
         User user = new User();
-        if(isEmailExit(email) !=null){
+        if(!isEmailExit(email).isEmpty()){
+//            System.out.println(isEmailExit(email));
             System.out.println("邮箱已经存在");
             return false;
         }

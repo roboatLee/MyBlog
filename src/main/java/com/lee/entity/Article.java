@@ -1,7 +1,9 @@
 package com.lee.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +17,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author lee
- * @since 2025-05-31
+ * @since 2025-06-01
  */
 @Getter
 @Setter
@@ -27,7 +29,8 @@ public class Article implements Serializable {
     /**
      * 主键
      */
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     /**
      * 标题
@@ -42,7 +45,7 @@ public class Article implements Serializable {
     /**
      * UserId外键
      */
-    private String userId;
+    private Integer userId;
 
     /**
      * markdown内容

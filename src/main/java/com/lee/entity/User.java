@@ -43,4 +43,22 @@ public class User implements Serializable {
      * 邮箱
      */
     private String email;
+
+    /**
+     * 个性签名
+     */
+    private  String personalSignature;
+
+
+    /**
+     * 经验
+     */
+    private  Integer experience;
+
+    /**
+     * 头像位置
+     */
+    private  Integer avatarPosition;
+
+
 }
