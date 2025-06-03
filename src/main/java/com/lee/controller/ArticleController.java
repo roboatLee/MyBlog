@@ -57,6 +57,7 @@ public class ArticleController {
                 Tag tag = tagService.getById(articleTag.getTagId());
                 tags.add(tag);
             }
+
             articleDTO.setTags(tags);
             articleDTO.setCreateTime(article.getCreateTime());
             articleDTO.setId(article.getId());
