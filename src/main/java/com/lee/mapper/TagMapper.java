@@ -2,6 +2,7 @@ package com.lee.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lee.entity.Tag;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.lee.entity.Tag;
  * @author lee
  * @since 2025-06-03
  */
+@Mapper
 public interface TagMapper extends BaseMapper<Tag> {
 
 }

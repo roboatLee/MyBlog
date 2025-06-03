@@ -3,17 +3,11 @@ package com.lee.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lee.entity.Article;
-import com.lee.entity.Comment;
-import com.lee.entity.Follow;
-import com.lee.entity.User;
+import com.lee.entity.*;
 import com.lee.entity.Users.TokenUserInfoDto;
 import com.lee.entity.dto.ArticleDTO;
 import com.lee.entity.dto.CommentDto;
-import com.lee.service.IArticleService;
-import com.lee.service.ICommentService;
-import com.lee.service.IFollowService;
-import com.lee.service.IUserService;
+import com.lee.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,9 +35,35 @@ public class ArticleController {
     @Autowired
     private IFollowService followService;
 
+    @Autowired
+    private ITagService tagService;
+
+    @Autowired
+    private IArticleTagService articleTagService;
     @RequestMapping("/loadDataList")
-    public List<Article> loadDataList(){
-        return articleService.list();
+    public List<ArticleDTO> loadDataList(){
+        List<Article> articles = articleService.list();
+        List<ArticleDTO> articleDTOS = new ArrayList<>();
+
+        for(Article article : articles){
+            ArticleDTO articleDTO = new ArticleDTO();
+            articleDTO.setTitle(article.getTitle());
+
+            QueryWrapper<ArticleTag> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("article_id", article.getId());
+            List<ArticleTag> articleTags = articleTagService.list(queryWrapper);
+            List<Tag> tags = new ArrayList<>();
+            for (ArticleTag articleTag : articleTags){
+                Tag tag = tagService.getById(articleTag.getTagId());
+                tags.add(tag);
+            }
+            articleDTO.setTags(tags);
+            articleDTO.setCreateTime(article.getCreateTime());
+            articleDTO.setId(article.getId());
+
+            articleDTOS.add(articleDTO);
+        }
+        return articleDTOS;
     }
 
     @RequestMapping("/getArticleById/{id}")
@@ -73,6 +93,18 @@ public class ArticleController {
             commentDtos.add(precomment);
         }
         articleDTO.setComments(commentDtos);
+
+        QueryWrapper<ArticleTag> queryWrapperT = new QueryWrapper<>();
+        queryWrapperT.eq("article_id", article.getId());
+        List<ArticleTag> articleTags = articleTagService.list(queryWrapperT);
+
+        List<Tag> tags = new ArrayList<>();
+        for (ArticleTag articleTag : articleTags){
+            Tag tag = tagService.getById(articleTag.getTagId());
+            tags.add(tag);
+        }
+        articleDTO.setTags(tags);
+
         return articleDTO;
     }
 
@@ -107,7 +139,17 @@ public class ArticleController {
         article.setTitle(articleDTO.getTitle());
         article.setUserId(tokenUserInfoDto.getUserId());
         article.setCreateTime(LocalDateTime.now());
+
         articleService.save(article);
+
+        Integer articleId = article.getId();
+        ArticleTag articleTag = new ArticleTag();
+        for (Tag tag : articleDTO.getTags()){
+            ArticleTag articleTag1 = new ArticleTag();
+            articleTag1.setArticleId(articleId);
+            articleTag1.setTagId(tag.getId());
+            articleTagService.save(articleTag1);
+        }
     }
 
     @RequestMapping("/updateArticle/{id}")
@@ -121,6 +163,16 @@ public class ArticleController {
         article.setMarkdownContent(articleDTO.getMarkdownContent());
         article.setHtmlContent(articleDTO.getHtmlContent());
         article.setUpdateTime(LocalDateTime.now());
+        System.out.println();
+//        List<ArticleTag> articleTags = new ArrayList<>();
+
+        for ( Tag tag : articleDTO.getTags()){
+            ArticleTag articleTag = new ArticleTag();
+            articleTag.setArticleId(id);
+            articleTag.setTagId(tag.getId());
+            articleTagService.save(articleTag);
+
+        }
         articleService.updateById(article);
     }
 
