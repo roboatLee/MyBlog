@@ -78,6 +78,8 @@ public class ArticleController {
         articleDTO.setHtmlContent(article.getHtmlContent());
         articleDTO.setTitle(article.getTitle());
         articleDTO.setMarkdownContent(article.getMarkdownContent());
+        articleDTO.setUserAvater(user.getAvatarPosition());
+        articleDTO.setUserId(user.getId());
         articleDTO.setUserName(user.getNikename());
         articleDTO.setCreateTime(article.getCreateTime());
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
@@ -144,7 +146,6 @@ public class ArticleController {
         articleService.save(article);
 
         Integer articleId = article.getId();
-        ArticleTag articleTag = new ArticleTag();
         for (Tag tag : articleDTO.getTags()){
             ArticleTag articleTag1 = new ArticleTag();
             articleTag1.setArticleId(articleId);

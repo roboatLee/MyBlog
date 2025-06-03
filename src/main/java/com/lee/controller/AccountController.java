@@ -3,6 +3,7 @@ package com.lee.controller;
 
 import com.lee.entity.User;
 import com.lee.entity.Users.TokenUserInfoDto;
+import com.lee.entity.vo.ResponseVo;
 import com.lee.service.IUserService;
 import com.lee.utils.MinioUtils;
 import com.lee.utils.RedisUtils;
@@ -75,16 +76,20 @@ public class AccountController {
     }
 
     @RequestMapping("/login")
-    public TokenUserInfoDto login(
+    public ResponseVo<TokenUserInfoDto>  login(
             String email,
             String password,
             String checkCodeKey,
             String checkCode
     ){
+        ResponseVo<TokenUserInfoDto> result = new ResponseVo<>();
         //查看验证码是否正确
         String code =  redisUtils.get("checkCode:"+checkCodeKey);
+        System.out.println(checkCode);
+        System.out.println(code);
         if(!Objects.equals(checkCode, code)){
             System.out.println("验证码错误");
+            return result;
         }
         //查看密码验证码是否正确
         User user = userService.login(email,password);
@@ -94,9 +99,13 @@ public class AccountController {
         tokenUserInfoDto.setUserId(user.getId());
         tokenUserInfoDto.setNikeName(user.getNikename());
         tokenUserInfoDto.setToken(checkCodeKey);
-        redisUtils.set("user:"+checkCodeKey,String.valueOf(user.getId()));
 
-        return tokenUserInfoDto;
+        redisUtils.set("user:"+checkCodeKey,String.valueOf(user.getId()));
+        result.setData(tokenUserInfoDto);
+        result.setCode(200);
+        result.setInfo("登录成功");
+
+        return result;
     }
 
     @RequestMapping("/editPersonal")
