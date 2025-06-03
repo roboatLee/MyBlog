@@ -146,4 +146,22 @@ public class ArticleController {
         followService.save(follow);
         return;
     }
+
+    @RequestMapping("/getConcern")
+    public List<User> getConcern(
+            Integer userId
+    ){
+
+        List<User> users = new ArrayList<>();
+        QueryWrapper<Follow> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("fan_id", userId);
+        List<Follow> follows = followService.list(queryWrapper);
+
+        for(Follow follow : follows){
+            User user = new User();
+            user = userService.getById(follow.getUserId());
+            users.add(user);
+        }
+        return users;
+    }
 }
